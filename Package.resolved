@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "libwebp-xcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/libwebp-Xcode",
+      "state" : {
+        "revision" : "2b3b43faaef54d1b897482428428357b7f7cd08b",
+        "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke.git",
+      "state" : {
+        "revision" : "958ca90df22fc77fdf33b5b9a6d70102b7743851",
+        "version" : "10.9.0"
+      }
+    }
+  ],
+  "version" : 2
+}
