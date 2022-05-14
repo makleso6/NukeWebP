@@ -174,9 +174,6 @@ public struct WebPDecoder {
                 throw WebPDecodingError.unknownError
             }
             let idec = WebPINewRGB(MODE_rgbA, nil, 0, 0)
-            defer {
-                WebPIDelete(idec)
-            }
             let status = WebPIUpdate(idec, bindedBasePtr, webPData.count)
             if status != VP8_STATUS_OK && status != VP8_STATUS_SUSPENDED {
                 throw WebPDecodingError.unknownError
