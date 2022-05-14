@@ -13,16 +13,9 @@ public typealias ImageType = UIImage
 public typealias ImageType = NSImage
 #endif
 
-
-public enum WebPDecodingError: Error {
-    case unknownError
-    case underlyingError(Error)
-}
-
 public protocol WebPDecoding: AnyObject {
     func decode(data: Data) throws -> ImageType
     func decodei(data: Data) throws -> ImageType
-
 }
 
 private let _queue = DispatchQueue(label: "com.webp.decoder", autoreleaseFrequency: .workItem)

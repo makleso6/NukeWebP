@@ -8,6 +8,11 @@ import UIKit.UIImage
 import AppKit.NSImage
 #endif
 
+public enum BasicWebPDecoderError: Error {
+    case unknownError
+    case underlyingError(Error)
+}
+
 public final class BasicWebPDecoder: WebPDecoding {
   
   public init() { }
@@ -36,14 +41,14 @@ public final class BasicWebPDecoder: WebPDecoding {
     var mutableWebPData = webPData
     return try mutableWebPData.withUnsafeMutableBytes { rawPtr in
       guard let bindedBasePtr = rawPtr.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-        throw WebPDecodingError.unknownError
+        throw BasicWebPDecoderError.unknownError
       }
       
       let idec = WebPINewRGB(MODE_rgbA, nil, 0, 0)
       
       let status = WebPIUpdate(idec, bindedBasePtr, webPData.count)
       if status != VP8_STATUS_OK && status != VP8_STATUS_SUSPENDED {
-        throw WebPDecodingError.unknownError
+        throw BasicWebPDecoderError.unknownError
       }
       var width: Int32 = 0
       var height: Int32 = 0
@@ -61,7 +66,7 @@ public final class BasicWebPDecoder: WebPDecoding {
           )
           
           guard let provider = CGDataProvider(data: data as CFData) else {
-            throw WebPDecodingError.unknownError
+            throw BasicWebPDecoderError.unknownError
           }
           let colorSpaceRef = CGColorSpaceCreateDeviceRGB()
           let pixelLength: Int = 4
@@ -108,7 +113,7 @@ public final class BasicWebPDecoder: WebPDecoding {
           }
         }
       }
-      throw WebPDecodingError.unknownError
+      throw BasicWebPDecoderError.unknownError
     }
   }
   
@@ -118,12 +123,12 @@ public final class BasicWebPDecoder: WebPDecoding {
     return try mutableWebPData.withUnsafeMutableBytes { rawPtr in
       
       guard let bindedBasePtr = rawPtr.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-        throw WebPDecodingError.unknownError
+        throw BasicWebPDecoderError.unknownError
       }
       
       var features: libwebp.WebPBitstreamFeatures = .init()
       if WebPGetFeatures(bindedBasePtr, webPData.count, &features) != VP8_STATUS_OK {
-        throw WebPDecodingError.unknownError
+        throw BasicWebPDecoderError.unknownError
       }
       
       var width: Int32 = 0
@@ -134,13 +139,13 @@ public final class BasicWebPDecoder: WebPDecoding {
       if (features.has_alpha != 0) {
         pixelLength = 4
         guard let _decoded = WebPDecodeRGBA(bindedBasePtr, webPData.count, &width, &height) else {
-          throw WebPDecodingError.unknownError
+          throw BasicWebPDecoderError.unknownError
         }
         decoded = _decoded
       } else {
         pixelLength = 3
         guard let _decoded = WebPDecodeRGB(bindedBasePtr, webPData.count, &width, &height) else {
-          throw WebPDecodingError.unknownError
+          throw BasicWebPDecoderError.unknownError
         }
         decoded = _decoded
       }
@@ -151,7 +156,7 @@ public final class BasicWebPDecoder: WebPDecoding {
       )
       
       guard let provider = CGDataProvider(data: data as CFData) else {
-        throw WebPDecodingError.unknownError
+        throw BasicWebPDecoderError.unknownError
       }
       
       let colorSpaceRef = CGColorSpaceCreateDeviceRGB()
@@ -170,7 +175,7 @@ public final class BasicWebPDecoder: WebPDecoding {
       ) {
         return image
       }
-      throw WebPDecodingError.unknownError
+      throw BasicWebPDecoderError.unknownError
     }
   }
 }
