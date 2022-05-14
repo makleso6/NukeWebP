@@ -15,7 +15,14 @@ public enum WebPDecodingError: UInt32, Error {
     case unknownError = 9999 // This is an own error to deal with internal problems
 }
 
-public struct WebPDecoder {
+public final class WebPDecoder {
+    
+    deinit {
+      if idec != nil {
+        WebPIDelete(idec)
+      }
+    }
+    
     public init() {
     }
     
@@ -43,7 +50,7 @@ public struct WebPDecoder {
         if let rgba = config.output.u.RGBA.rgba {
             let data = Data(bytesNoCopy: rgba,
                             count: config.output.u.RGBA.size,
-                            deallocator: .free)
+                            deallocator: .none)
             return (data: data, last_y: config.output.height)
         } else {
             throw WebPDecodingError.unknownError
@@ -165,15 +172,18 @@ public struct WebPDecoder {
         }
     }
     
+    var idec: OpaquePointer?
+    
     internal func decodei(_ webPData: Data, config: inout WebPDecoderConfig) throws {
         var mutableWebPData = webPData
-        
+        if idec == nil {
+          idec = WebPINewRGB(MODE_rgbA, nil, 0, 0)
+        }
         try mutableWebPData.withUnsafeMutableBytes { rawPtr in
             
             guard let bindedBasePtr = rawPtr.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
                 throw WebPDecodingError.unknownError
             }
-            let idec = WebPINewRGB(MODE_rgbA, nil, 0, 0)
             let status = WebPIUpdate(idec, bindedBasePtr, webPData.count)
             if status != VP8_STATUS_OK && status != VP8_STATUS_SUSPENDED {
                 throw WebPDecodingError.unknownError

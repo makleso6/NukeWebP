@@ -15,6 +15,12 @@ public enum BasicWebPDecoderError: Error {
 
 public final class BasicWebPDecoder: WebPDecoding {
   
+  deinit {
+    if idec != nil {
+      WebPIDelete(idec)
+    }
+  }
+  
   public init() { }
   
   public func decode(data: Data) throws -> ImageType {
@@ -37,15 +43,20 @@ public final class BasicWebPDecoder: WebPDecoding {
     #endif
   }
   
+  var idec: OpaquePointer?
+  
+  
+  
   private func decodeiCGImage(data webPData: Data) throws -> CGImage {
     var mutableWebPData = webPData
+    if idec == nil {
+      idec = WebPINewRGB(MODE_rgbA, nil, 0, 0)
+    }
     return try mutableWebPData.withUnsafeMutableBytes { rawPtr in
       guard let bindedBasePtr = rawPtr.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
         throw BasicWebPDecoderError.unknownError
       }
-      
-      let idec = WebPINewRGB(MODE_rgbA, nil, 0, 0)
-      
+            
       let status = WebPIUpdate(idec, bindedBasePtr, webPData.count)
       if status != VP8_STATUS_OK && status != VP8_STATUS_SUSPENDED {
         throw BasicWebPDecoderError.unknownError
@@ -58,11 +69,11 @@ public final class BasicWebPDecoder: WebPDecoding {
         
         if (0 < width + height && 0 < last_y && last_y <= height) {
           let rgbaSize = last_y * stride;
-          
+
           let data = Data(
             bytesNoCopy: rgba,
             count: Int(rgbaSize),
-            deallocator: .free
+            deallocator: .none
           )
           
           guard let provider = CGDataProvider(data: data as CFData) else {

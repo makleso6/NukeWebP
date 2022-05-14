@@ -53,7 +53,7 @@ public class WebPImageDecoder: ImageDecoding {
 
 // MARK: - check webp format data.
 extension WebPImageDecoder {
-
+    
     public static func enable(closure: @escaping () -> WebPDecoding) {
         Nuke.ImageDecoderRegistry.shared.register { (context) -> ImageDecoding? in
             WebPImageDecoder.enable(context: context, closure: closure)
