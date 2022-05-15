@@ -24,7 +24,7 @@ public final class BasicWebPDecoder: WebPDecoding {
   public init() { }
   
   public func decode(data: Data) throws -> ImageType {
-    let image = try decodeiCGImage(data: data)
+    let image = try decodeCGImage(data: data)
 
     #if !os(macOS)
     return UIImage(cgImage: image)
@@ -95,7 +95,7 @@ public final class BasicWebPDecoder: WebPDecoding {
             provider: provider,
             decode: nil,
             shouldInterpolate: false,
-            intent: CGColorRenderingIntent.defaultIntent
+            intent: .defaultIntent
           ) {
             
             let canvasColorSpaceRef = CGColorSpaceCreateDeviceRGB()
@@ -145,7 +145,8 @@ public final class BasicWebPDecoder: WebPDecoding {
       var width: Int32 = 0
       var height: Int32 = 0
       let pixelLength: Int32
-      
+      let bitmapInfo: CGBitmapInfo
+
       let decoded: UnsafeMutablePointer<UInt8>
       if (features.has_alpha != 0) {
         pixelLength = 4
@@ -153,12 +154,14 @@ public final class BasicWebPDecoder: WebPDecoding {
           throw BasicWebPDecoderError.unknownError
         }
         decoded = _decoded
+        bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.last.rawValue)
       } else {
         pixelLength = 3
         guard let _decoded = WebPDecodeRGB(bindedBasePtr, webPData.count, &width, &height) else {
           throw BasicWebPDecoderError.unknownError
         }
         decoded = _decoded
+        bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.none.rawValue)
       }
       let data = Data(
         bytesNoCopy: decoded,
@@ -170,6 +173,7 @@ public final class BasicWebPDecoder: WebPDecoding {
         throw BasicWebPDecoderError.unknownError
       }
       
+      
       let colorSpaceRef = CGColorSpaceCreateDeviceRGB()
       if let image = CGImage(
         width: Int(width),
@@ -178,11 +182,11 @@ public final class BasicWebPDecoder: WebPDecoding {
         bitsPerPixel: Int(pixelLength) * 8,
         bytesPerRow: Int(pixelLength) * Int(width),
         space: colorSpaceRef,
-        bitmapInfo: .init(rawValue: UInt32(0)),
+        bitmapInfo: bitmapInfo,
         provider: provider,
         decode: nil,
         shouldInterpolate: false,
-        intent: CGColorRenderingIntent.defaultIntent
+        intent: .defaultIntent
       ) {
         return image
       }

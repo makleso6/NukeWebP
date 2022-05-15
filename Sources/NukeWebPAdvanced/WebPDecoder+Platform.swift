@@ -14,11 +14,15 @@ extension WebPDecoder {
         guard let provider = CGDataProvider(data: decodedData) else {
             throw WebPError.unexpectedError(withMessage: "Couldn't initialize CGDataProvider")
         }
-
-        let bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let renderingIntent = CGColorRenderingIntent.defaultIntent
+        
+        let bitmapInfo: CGBitmapInfo
         let bytesPerPixel = 4
+        if feature.hasAlpha {
+            bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.last.rawValue)
+        } else {
+            bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.noneSkipLast.rawValue)
+        }
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
 
         if let cgImage = CGImage(width: width,
                                  height: height,
@@ -30,7 +34,7 @@ extension WebPDecoder {
                                  provider: provider,
                                  decode: nil,
                                  shouldInterpolate: false,
-                                 intent: renderingIntent) {
+                                 intent: .defaultIntent) {
             return cgImage
         }
 
@@ -50,7 +54,6 @@ extension WebPDecoder {
 
         let bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let renderingIntent = CGColorRenderingIntent.defaultIntent
         let bytesPerPixel = 4
         let last_y = decodedi.last_y
         if let image = CGImage(
@@ -64,7 +67,7 @@ extension WebPDecoder {
             provider: provider,
             decode: nil,
             shouldInterpolate: false,
-            intent: renderingIntent
+            intent: .defaultIntent
         ) {
           let canvasColorSpaceRef = CGColorSpaceCreateDeviceRGB()
           if let canvas = CGContext(
