@@ -1,6 +1,6 @@
 # NukeWebP
 
-WebP image decoder for [Nuke](https://github.com/kean/Nuke) written in swift.
+WebP image decoder for [Nuke](https://github.com/kean/Nuke) written in swift. It support progressive WebP
 
 
 ## Usage
@@ -24,7 +24,7 @@ import NukeWebPAdvanced
 WebPImageDecoder.enable(closure: {
   var options = WebPDecoderOptions()
   options.useThreads = true
-  return AdvancesWebPDecoder(options: options)
+  return AdvancedWebPDecoder(options: options)
 })
 
 ```
@@ -33,7 +33,7 @@ WebPImageDecoder.enable(closure: {
 
 | Swift | Xcode | iOS | macOS | tvOS | watchOS |
 |:-----:|:-----:|:---:|:-----:|:----:|:-------:|
-| 5.1, 5.2 | 13.0 | 11.0 | 10.13 | 11.0 | 4.0 |
+| 5.3 | 13.0 | 11.0 | 10.13 | 11.0 | 4.0 |
 
 ## Dependencies
 | [Nuke](https://github.com/kean/Nuke) | [libwebp](https://github.com/SDWebImage/libwebp-Xcode) |

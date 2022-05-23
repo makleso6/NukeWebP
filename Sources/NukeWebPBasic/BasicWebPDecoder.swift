@@ -25,7 +25,7 @@ public final class BasicWebPDecoder: WebPDecoding {
   
   public func decode(data: Data) throws -> ImageType {
     let image = try decodeCGImage(data: data)
-
+      
     #if !os(macOS)
     return UIImage(cgImage: image)
     #else
@@ -129,6 +129,7 @@ public final class BasicWebPDecoder: WebPDecoding {
   }
   
   private func decodeCGImage(data webPData: Data) throws -> CGImage {
+//      throw BasicWebPDecoderError.unknownError
     var mutableWebPData = webPData
     
     return try mutableWebPData.withUnsafeMutableBytes { rawPtr in

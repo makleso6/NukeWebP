@@ -8,7 +8,7 @@ import UIKit.UIImage
 import AppKit.NSImage
 #endif
 
-public final class AdvancesWebPDecoder: WebPDecoding {
+public final class AdvancedWebPDecoder: WebPDecoding {
   
   private lazy var decoder: WebPDecoder = WebPDecoder()
   private let options: WebPDecoderOptions
