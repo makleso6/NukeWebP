@@ -33,7 +33,7 @@ WebPImageDecoder.enable(closure: {
 
 | Swift | Xcode | iOS | macOS | tvOS | watchOS |
 |:-----:|:-----:|:---:|:-----:|:----:|:-------:|
-| 5.3 | 13.0 | 11.0 | 10.13 | 11.0 | 4.0 |
+| 5.4 | 13.0 | 11.0 | 10.13 | 11.0 | 4.0 |
 
 ## Dependencies
 | [Nuke](https://github.com/kean/Nuke) | [libwebp](https://github.com/SDWebImage/libwebp-Xcode) |
