@@ -13,30 +13,27 @@ public typealias ImageType = UIImage
 public typealias ImageType = NSImage
 #endif
 
-public protocol WebPDecoding: AnyObject {
+public protocol WebPDecoding: Sendable {
     func decode(data: Data) throws -> ImageType
     func decodei(data: Data) throws -> ImageType
 }
 
 private let _queue = DispatchQueue(label: "com.webp.decoder", autoreleaseFrequency: .workItem)
 
-public class WebPImageDecoder: ImageDecoding {
-    
+public final class WebPImageDecoder: ImageDecoding, @unchecked Sendable {
+        
     private let decoder: WebPDecoding
     
     public init(decoder: WebPDecoding) {
         self.decoder = decoder
     }
     
-    public func decode(_ data: Data) -> ImageContainer? {
-        do {
-            return try _queue.sync(execute: {
-                let image = try decoder.decode(data: data)
-                return ImageContainer(image: image, type: .webp, data: data)
-            })
-        } catch {
-            return nil
-        }
+    public func decode(_ data: Data) throws -> ImageContainer {
+        return try _queue.sync(execute: {
+            let image = try decoder.decode(data: data)
+            return ImageContainer(image: image, type: .webp, data: data)
+        })
+        
     }
     
     public func decodePartiallyDownloadedData(_ data: Data) -> ImageContainer? {

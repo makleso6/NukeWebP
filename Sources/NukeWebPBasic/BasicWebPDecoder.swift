@@ -129,7 +129,6 @@ public final class BasicWebPDecoder: WebPDecoding {
   }
   
   private func decodeCGImage(data webPData: Data) throws -> CGImage {
-//      throw BasicWebPDecoderError.unknownError
     var mutableWebPData = webPData
     
     return try mutableWebPData.withUnsafeMutableBytes { rawPtr in

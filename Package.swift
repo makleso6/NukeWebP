@@ -6,10 +6,10 @@ import PackageDescription
 let package = Package(
     name: "NukeWebP",
     platforms: [
-        .macOS(.v10_13),
-        .iOS(.v11),
-        .tvOS(.v11),
-        .watchOS(.v4)
+        .iOS(.v13),
+        .tvOS(.v13),
+        .macOS(.v10_15),
+        .watchOS(.v6)
     ],
     products: [
         .library(
@@ -24,7 +24,7 @@ let package = Package(
         
     ],
     dependencies: [
-        .package(url: "https://github.com/kean/Nuke.git", from: "10.9.0"),
+        .package(url: "https://github.com/kean/Nuke.git", from: "11.0.0"),
         .package(url: "https://github.com/SDWebImage/libwebp-Xcode", from: "1.2.1"),
     ],
     targets: [
