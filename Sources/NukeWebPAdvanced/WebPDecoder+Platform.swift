@@ -1,7 +1,7 @@
 import Foundation
 import libwebp
 
-#if os(macOS) || os(iOS)
+#if os(macOS) || os(iOS) || os(watchOS)
 import CoreGraphics
 
 extension WebPDecoder {

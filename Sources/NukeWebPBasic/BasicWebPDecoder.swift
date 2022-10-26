@@ -1,19 +1,14 @@
 import libwebp
 import NukeWebP
 import Foundation
-
-#if !os(macOS)
-import UIKit.UIImage
-#else
-import AppKit.NSImage
-#endif
+import CoreGraphics
 
 public enum BasicWebPDecoderError: Error {
     case unknownError
     case underlyingError(Error)
 }
 
-public final class BasicWebPDecoder: WebPDecoding {
+public final class BasicWebPDecoder: WebPDecoding, @unchecked Sendable {
   
   deinit {
     if idec != nil {
@@ -23,29 +18,16 @@ public final class BasicWebPDecoder: WebPDecoding {
   
   public init() { }
   
-  public func decode(data: Data) throws -> ImageType {
-    let image = try decodeCGImage(data: data)
-      
-    #if !os(macOS)
-    return UIImage(cgImage: image)
-    #else
-    return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
-    #endif
+  public func decode(data: Data) throws -> CGImage {
+    return try decodeCGImage(data: data)
   }
   
-  public func decodei(data: Data) throws -> ImageType {
-    let image = try decodeiCGImage(data: data)
+  public func decodei(data: Data) throws -> CGImage {
+    return try decodeiCGImage(data: data)
     
-    #if !os(macOS)
-    return UIImage(cgImage: image)
-    #else
-    return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
-    #endif
   }
   
-  var idec: OpaquePointer?
-  
-  
+  private var idec: OpaquePointer?  
   
   private func decodeiCGImage(data webPData: Data) throws -> CGImage {
     var mutableWebPData = webPData

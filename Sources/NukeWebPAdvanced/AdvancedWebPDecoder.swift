@@ -1,12 +1,7 @@
 import libwebp
 import NukeWebP
 import Foundation
-
-#if !os(macOS)
-import UIKit.UIImage
-#else
-import AppKit.NSImage
-#endif
+import CoreGraphics
 
 public final class AdvancedWebPDecoder: WebPDecoding, @unchecked Sendable {
   
@@ -17,19 +12,11 @@ public final class AdvancedWebPDecoder: WebPDecoding, @unchecked Sendable {
     self.options = options
   }
   
-  public func decode(data: Data) throws -> ImageType {
-#if !os(macOS)
-    return try decoder.decode(toUImage: data, options: options)
-#else
-    return try decoder.decode(toNSImage: data, options: options)
-#endif
+  public func decode(data: Data) throws -> CGImage {
+      return try decoder.decode(data, options: options)
   }
   
-  public func decodei(data: Data) throws -> ImageType {
-#if !os(macOS)
-    return try decoder.decodei(toUImage: data, options: options)
-#else
-    return try decoder.decodei(toNSImage: data, options: options)
-#endif
+  public func decodei(data: Data) throws -> CGImage {
+      return try decoder.decodei(data, options: options)
   }
 }
