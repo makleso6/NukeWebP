@@ -38,7 +38,7 @@ WebPImageDecoder.enable(closure: {
 ## Dependencies
 | [Nuke](https://github.com/kean/Nuke) | [libwebp](https://github.com/SDWebImage/libwebp-Xcode) |
 |:---:|:---:|
-| >= 10.9.0 | >=v1.2.1 |
+| >= 12.0.0 | >=v1.2.1 |
 
 ## Author
 
